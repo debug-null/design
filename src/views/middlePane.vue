@@ -1,16 +1,27 @@
 <template>
-  <div class="middle-pane">
+  <div
+    class="middle-pane"
+    @wheel.capture.stop="handlerWheel"
+  >
+    <!-- //给ruler的宽度多一点，这样防止滑动溢出 -->
+    <Ruler
+      :layout-attr="{width:parseInt(workerWidth)*2+'px',height:parseInt(workerHeight)*2+'px'}"
+      :move-x="scrollLeft"
+      :move-y="scrollTop"
+    />
 
-    <happy-scroll
-      color="rgba(69, 70, 71,.8)"
-      size="6"
-    >
-      <Ruler>
-        <div class="worker-container">
-          <div
-            class="worker-gide"
-            :style="{width:'1200px',height:'800px'}"
-          >
+    <div class="worker-container">
+      <happy-scroll
+        color="rgba(69, 70, 71,.8)"
+        size="6"
+        :scroll-top.sync="scrollTop"
+        :scroll-left.sync="scrollLeft"
+      >
+        <div
+          class="worker-gide"
+          :style="{width:'1200px',height:'800px'}"
+        >
+          <div class="worker-gide-bg">
             <svg
               width="100%"
               height="100%"
@@ -56,11 +67,16 @@
               />
             </svg>
           </div>
+          <div class="worker-gide-control">控件
+            {{ scrollTop }}
+            <div style="text-align:center">
+              {{ scrollLeft }}
+            </div>
+          </div>
         </div>
-      </Ruler>
+      </happy-scroll>
 
-    </happy-scroll>
-
+    </div>
   </div>
 </template>
 <script>
@@ -73,14 +89,18 @@ export default {
   components: { Ruler, HappyScroll },
   data() {
     return {
-
+      scrollTop: 0,
+      scrollLeft: 0,
+      workerWidth: '1200px', // 画布的宽度
+      workerHeight: '800px'
     };
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
-
+    // 鼠标滚轮滚动事件
+    handlerWheel(event) {
+      // console.log('handlerWheel -> event', event);
+    }
   }
 };
 </script>
@@ -106,17 +126,29 @@ export default {
       background-image: none;
       background-size: 100%;
       margin: 21px 0 0 21px;
+      .worker-gide-bg {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        transform-origin: center center;
+        width: 100%;
+        height: 100%;
+      }
+      .worker-gide-control {
+        color: #000;
+      }
     }
   }
 }
 </style>
 <style lang="scss">
-.middle-pane{
-  .happy-scroll{
-    .happy-scroll-content{
+.middle-pane {
+  .happy-scroll {
+    .happy-scroll-content {
       position: relative;
     }
-    }
+  }
 }
-
 </style>

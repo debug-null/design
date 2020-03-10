@@ -3,10 +3,13 @@
   <div
     ref="rulerWrapper"
     class="ruler-wrapper"
-    :style="{width:'2200px',height:'1600px'}"
+    :style="layoutAttr"
   >
     <div class="ruler-box">
-      <ul class="ruler horizontal">
+      <ul
+        class="ruler horizontal"
+        :style="xStyleFormatter"
+      >
         <li
           v-for="(item, index) in xScale"
           :key="index"
@@ -15,7 +18,10 @@
           <span>{{ item.id }}</span>
         </li>
       </ul>
-      <ul class="ruler vertical">
+      <ul
+        class="ruler vertical"
+        :style="yStyleFormatter"
+      >
         <li
           v-for="(item, index) in yScale"
           :key="index"
@@ -25,14 +31,32 @@
         </li>
       </ul>
     </div>
-    <div class="content-box">
-      <slot />
-    </div>
   </div>
 </template>
 <script>
 export default {
   name: 'Ruler',
+  props: {
+    layoutAttr: {
+      type: Object,
+      default: function() {
+        return {
+          width: '1000px',
+          height: '800px'
+        };
+      }
+    },
+    // x 轴需要偏移的距离
+    moveX: {
+      type: Number,
+      default: 0
+    },
+    // y 轴需要偏移的距离
+    moveY: {
+      type: Number,
+      default: 0
+    }
+  },
   data() {
     return {
       setpNum: 100, // 间隔数
@@ -40,7 +64,23 @@ export default {
       yScale: []
     };
   },
+  computed: {
+    xStyleFormatter() {
+      const translateX = this.moveX;
+      return {
+        transform: `translate(-${translateX}px, 0)`
+      };
+    },
+    yStyleFormatter() {
+      const translateY = this.moveY;
+      return {
+        transform: `translate(0px, -${translateY}px)`
+      };
+    }
+  },
   mounted() {
+    console.log(this.layoutAttr);
+
     this.initRuler();
   },
   methods: {
