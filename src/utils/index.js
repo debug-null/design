@@ -36,3 +36,15 @@ export const off = (function() {
   }
 })()
 ;
+// 节流
+export const throttle = function(func, delay) {
+  var timer = null;
+  return function() {
+    if (!timer) {
+      timer = setTimeout(() => {
+        func.apply(this, arguments);
+        timer = null;
+      }, delay);
+    }
+  };
+};

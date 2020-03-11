@@ -60,7 +60,7 @@ export default {
   }
   .main-content {
     display: flex;
-    height: 600px;
+    height: 100%;
     color: #fff;
     .left-pane {
       background-color: #212734;

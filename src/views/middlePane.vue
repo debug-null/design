@@ -10,67 +10,78 @@
       :move-y="scrollTop"
     />
 
-    <div class="worker-container">
+    <div
+      class="worker-container"
+    >
       <happy-scroll
         color="rgba(69, 70, 71,.8)"
         size="6"
         :scroll-top.sync="scrollTop"
         :scroll-left.sync="scrollLeft"
+        resize
       >
         <div
-          class="worker-gide"
-          :style="{width:'1200px',height:'800px'}"
+          class="worker-gide-box"
+          :style="{width:'2400px',height:'1600px'}"
         >
-          <div class="worker-gide-bg">
-            <svg
-              width="100%"
-              height="100%"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <defs>
-                <pattern
-                  id="smallGrid"
-                  width="5"
-                  height="5"
-                  patternUnits="userSpaceOnUse"
-                >
-                  <path
-                    d="M 5 0 L 0 0 0 5"
-                    fill="none"
-                    stroke="rgba(207, 207, 207, 0.3)"
-                    stroke-width="1"
-                  />
-                </pattern>
-                <pattern
-                  id="grid"
-                  width="25"
-                  height="25"
-                  patternUnits="userSpaceOnUse"
-                >
-                  <rect
-                    width="25"
-                    height="25"
-                    fill="url(#smallGrid)"
-                  />
-                  <path
-                    d="M 25 0 L 0 0 0 25"
-                    fill="none"
-                    stroke="rgba(186, 186, 186, 0.5)"
-                    stroke-width="1"
-                  />
-                </pattern>
-              </defs>
-              <rect
+          <div
+            class="worker-gide"
+            :style="{width:'1200px',height:'800px'}"
+          >
+            <div class="worker-gide-bg">
+              <svg
                 width="100%"
                 height="100%"
-                fill="url(#grid)"
-              />
-            </svg>
-          </div>
-          <div class="worker-gide-control">控件
-            {{ scrollTop }}
-            <div style="text-align:center">
-              {{ scrollLeft }}
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <defs>
+                  <pattern
+                    id="smallGrid"
+                    width="5"
+                    height="5"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <path
+                      d="M 5 0 L 0 0 0 5"
+                      fill="none"
+                      stroke="rgba(207, 207, 207, 0.3)"
+                      stroke-width="1"
+                    />
+                  </pattern>
+                  <pattern
+                    id="grid"
+                    width="25"
+                    height="25"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <rect
+                      width="25"
+                      height="25"
+                      fill="url(#smallGrid)"
+                    />
+                    <path
+                      d="M 25 0 L 0 0 0 25"
+                      fill="none"
+                      stroke="rgba(186, 186, 186, 0.5)"
+                      stroke-width="1"
+                    />
+                  </pattern>
+                </defs>
+                <rect
+                  width="100%"
+                  height="100%"
+                  fill="url(#grid)"
+                />
+              </svg>
+            </div>
+            <div
+              class="worker-gide-control"
+              @click="test"
+            >控件
+              {{ scrollTop }}
+              <div style="text-align:center">
+                {{ scrollLeft }}
+              </div>
             </div>
           </div>
         </div>
@@ -100,6 +111,9 @@ export default {
     // 鼠标滚轮滚动事件
     handlerWheel(event) {
       // console.log('handlerWheel -> event', event);
+    },
+    test(e) {
+      alert(e);
     }
   }
 };
@@ -126,12 +140,8 @@ export default {
       background-image: none;
       background-size: 100%;
       margin: 21px 0 0 21px;
+      border-radius: 2px;
       .worker-gide-bg {
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        width: 100%;
-        height: 100%;
         transform-origin: center center;
         width: 100%;
         height: 100%;

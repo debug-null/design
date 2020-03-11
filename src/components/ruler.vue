@@ -6,30 +6,55 @@
     :style="layoutAttr"
   >
     <div class="ruler-box">
-      <ul
-        class="ruler horizontal"
-        :style="xStyleFormatter"
-      >
-        <li
-          v-for="(item, index) in xScale"
-          :key="index"
-          :style="{width:'50px',marginLeft: '49px',flexBasis: '50px'}"
+      <div class="horizontal-box">
+        <ul
+          ref="horizontal"
+          class="ruler horizontal"
+          :style="xStyleFormatter"
+          @mousemove="horizontalMouseMove"
+          @mouseleave="horizontalMouseleave"
         >
-          <span>{{ item.id }}</span>
-        </li>
-      </ul>
-      <ul
-        class="ruler vertical"
-        :style="yStyleFormatter"
-      >
-        <li
-          v-for="(item, index) in yScale"
-          :key="index"
-          :style="{height:'50px',marginTop: '49px',flexBasis: '50px'}"
+          <li
+            v-for="(item, index) in xScale"
+            :key="index"
+            :style="{width:'50px',marginLeft: '49px',flexBasis: '50px'}"
+          >
+            <span>{{ item.id }}</span>
+          </li>
+        </ul>
+        <div
+          v-show="xIndicator"
+          class="indicator"
+          :style="{left: xIndicator + 20 + 'px'}"
         >
-          <span>{{ item.id }}</span>
-        </li>
-      </ul>
+          <span>{{ xIndicator+moveX }}</span>
+        </div>
+      </div>
+
+      <div class="vertical-box">
+        <ul
+          ref="vertical"
+          class="ruler vertical"
+          :style="yStyleFormatter"
+          @mousemove="verticalMouseMove"
+          @mouseleave="verticalMouseleave"
+        >
+          <li
+            v-for="(item, index) in yScale"
+            :key="index"
+            :style="{height:'50px',marginTop: '49px',flexBasis: '50px'}"
+          >
+            <span>{{ item.id }}</span>
+          </li>
+        </ul>
+        <div
+          v-show="yIndicator"
+          class="indicator"
+          :style="{top: yIndicator + 20 + 'px'}"
+        >
+          <span>{{ yIndicator+moveY }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -61,36 +86,48 @@ export default {
     return {
       setpNum: 100, // 间隔数
       xScale: [],
-      yScale: []
+      yScale: [],
+      offsetX: 0, // 偏移距离
+      offsetY: 0,
+      xIndicator: 0, // x 指示
+      yIndicator: 0
     };
   },
   computed: {
     xStyleFormatter() {
       const translateX = this.moveX;
       return {
+        width: this.layoutAttr.width,
         transform: `translate(-${translateX}px, 0)`
       };
     },
     yStyleFormatter() {
       const translateY = this.moveY;
       return {
+        height: this.layoutAttr.height,
         transform: `translate(0px, -${translateY}px)`
       };
     }
   },
   mounted() {
-    console.log(this.layoutAttr);
-
     this.initRuler();
   },
   methods: {
     initRuler() {
-      const rulerWrapper = this.$refs.rulerWrapper;
-      console.dir(rulerWrapper);
-      const wrapperWidth = rulerWrapper.offsetWidth;
-      const wrapperHeight = rulerWrapper.offsetHeight;
-      this.getCalcRevise(this.xScale, wrapperWidth);
-      this.getCalcRevise(this.yScale, wrapperHeight);
+      this.$nextTick(() => {
+        const rulerWrapper = this.$refs.rulerWrapper;
+        console.dir(rulerWrapper);
+        const wrapperWidth = rulerWrapper.offsetWidth;
+        const wrapperHeight = rulerWrapper.offsetHeight;
+        this.getCalcRevise(this.xScale, wrapperWidth);
+        this.getCalcRevise(this.yScale, wrapperHeight);
+        this.getOffsetDistance();
+      });
+    },
+    // 获取偏移距离
+    getOffsetDistance() {
+      this.offsetX = this.$refs.horizontal.getBoundingClientRect().x;
+      this.offsetY = this.$refs.vertical.getBoundingClientRect().y;
     },
     // 构建刻度
     getCalcRevise(array, length) {
@@ -102,6 +139,18 @@ export default {
           });
         }
       }
+    },
+    horizontalMouseMove(e) {
+      this.xIndicator = e.pageX - this.offsetX;
+    },
+    horizontalMouseleave() {
+      this.xIndicator = 0;
+    },
+    verticalMouseMove(e) {
+      this.yIndicator = e.pageY - this.offsetY;
+    },
+    verticalMouseleave() {
+      this.yIndicator = 0;
     }
   }
 };
@@ -109,11 +158,6 @@ export default {
 
 <style lang="scss">
 .ruler-wrapper {
-  position: absolute;
-  pointer-events: none;
-  left: 0px;
-  top: 0px;
-  bottom: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -135,7 +179,7 @@ export default {
       }
     }
     &.vertical {
-      top: 0px;
+      top: 20px;
       bottom: 0;
       left: 0;
       background-size: 4px 5px !important;
@@ -218,6 +262,21 @@ export default {
           }
         }
       }
+    }
+  }
+
+  .horizontal-box,.vertical-box {
+    position: relative;
+    .indicator {
+      position: absolute;
+      top: 22px;
+      left: 24px;
+      z-index: 1;
+      color: #fff;
+      background-color: #2c2b32;
+      padding: 2px 10px;
+      font-size: 12px;
+      border-radius: 2px;
     }
   }
 }
