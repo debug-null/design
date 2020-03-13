@@ -13,6 +13,7 @@
           :style="xStyleFormatter"
           @mousemove="horizontalMouseMove"
           @mouseleave="horizontalMouseleave"
+          @click="indicatorClick('x')"
         >
           <li
             v-for="(item, index) in xScale"
@@ -29,6 +30,10 @@
         >
           <span>{{ xIndicator+moveX }}</span>
         </div>
+        <div
+          ref="xLines"
+          class="lines"
+        />
       </div>
 
       <div class="vertical-box">
@@ -38,6 +43,7 @@
           :style="yStyleFormatter"
           @mousemove="verticalMouseMove"
           @mouseleave="verticalMouseleave"
+          @click="indicatorClick('y')"
         >
           <li
             v-for="(item, index) in yScale"
@@ -54,6 +60,10 @@
         >
           <span>{{ yIndicator+moveY }}</span>
         </div>
+        <div
+          ref="yLines"
+          class="lines"
+        />
       </div>
     </div>
   </div>
@@ -62,6 +72,7 @@
 export default {
   name: 'Ruler',
   props: {
+    // 标尺的尺寸
     layoutAttr: {
       type: Object,
       default: function() {
@@ -71,12 +82,12 @@ export default {
         };
       }
     },
-    // x 轴需要偏移的距离
+    // x 轴需要移动的距离
     moveX: {
       type: Number,
       default: 0
     },
-    // y 轴需要偏移的距离
+    // y 轴需要移动的距离
     moveY: {
       type: Number,
       default: 0
@@ -122,6 +133,9 @@ export default {
         this.getCalcRevise(this.xScale, wrapperWidth);
         this.getCalcRevise(this.yScale, wrapperHeight);
         this.getOffsetDistance();
+        // 绑定删除辅助线事件
+        this.delIndicatorLine('xLines');
+        this.delIndicatorLine('yLines');
       });
     },
     // 获取偏移距离
@@ -131,7 +145,6 @@ export default {
     },
     // 构建刻度
     getCalcRevise(array, length) {
-      console.log('getCalcRevise -> array, length', array, length);
       for (let i = 0; i <= length; i += 1) {
         if (i % this.setpNum === 0) {
           array.push({
@@ -151,6 +164,29 @@ export default {
     },
     verticalMouseleave() {
       this.yIndicator = 0;
+    },
+    // 点击生成辅助线
+    indicatorClick(direction) {
+      const linesClassName = direction + 'Lines';
+      const indicator = direction + 'Indicator';
+      const lines = this.$refs[linesClassName];
+      const Line = document.createElement('div');
+      Line.className = 'line';
+      if (direction === 'x') {
+        Line.style.left = `${this[indicator] + 20}px`;
+      } else {
+        Line.style.top = `${this[indicator] + 20}px`;
+      }
+      lines.appendChild(Line);
+    },
+    // 点击删除辅助线
+    delIndicatorLine(lines) {
+      const linesDom = this.$refs[lines];
+      linesDom.addEventListener('click', function(e) {
+        if (e.target.className === 'line') {
+          e.target.remove();
+        }
+      });
     }
   }
 };
@@ -183,7 +219,6 @@ export default {
       bottom: 0;
       left: 0;
       background-size: 4px 5px !important;
-      cursor: row-resize;
       background: linear-gradient(
           to bottom,
           transparent 4px,
@@ -232,7 +267,6 @@ export default {
       right: 0;
       left: 20px;
       background-size: 5px 4px !important;
-      cursor: col-resize;
       z-index: 1;
       background: linear-gradient(
           to right,
@@ -265,18 +299,65 @@ export default {
     }
   }
 
-  .horizontal-box,.vertical-box {
+  .horizontal-box,
+  .vertical-box {
     position: relative;
     .indicator {
       position: absolute;
       top: 22px;
       left: 24px;
       z-index: 1;
-      color: #fff;
-      background-color: #2c2b32;
-      padding: 2px 10px;
-      font-size: 12px;
-      border-radius: 2px;
+      span {
+        color: #fff;
+        background-color: #2c2b32;
+        padding: 2px 10px;
+        font-size: 12px;
+        border-radius: 2px;
+        display: inline-block;
+      }
+    }
+    .lines{
+      .line{
+        position: absolute;
+        top: 0;
+        left: 0px;
+
+        background-color: #363e50;
+        opacity: 0.5;
+        z-index: 1
+      }
+
+    }
+  }
+  .horizontal-box {
+    .indicator {
+      height: 100vh;
+      width: 1px;
+      background-color: #363e50;
+      opacity: 0.5;
+    }
+    .lines{
+      .line{
+        height: 100vh;
+        width: 1px;
+        cursor: col-resize;
+      }
+    }
+  }
+  .vertical-box {
+    .indicator {
+      height: 1px;
+      width: 100%;
+      background-color: #363e50;
+      opacity: 0.5;
+    }
+     .lines{
+      .line{
+        height: 1px;
+        width: 100%;
+        cursor: row-resize;
+
+      }
     }
   }
 }

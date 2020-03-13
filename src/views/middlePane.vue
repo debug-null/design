@@ -5,7 +5,7 @@
   >
     <!-- //给ruler的宽度多一点，这样防止滑动溢出 -->
     <Ruler
-      :layout-attr="{width:parseInt(workerWidth)*2+'px',height:parseInt(workerHeight)*2+'px'}"
+      :layout-attr="{width:parseInt(workerAttr.width)*2+'px',height:parseInt(workerAttr.height)*2+'px'}"
       :move-x="scrollLeft"
       :move-y="scrollTop"
     />
@@ -26,7 +26,7 @@
         >
           <div
             class="worker-gide"
-            :style="{width:'1200px',height:'800px'}"
+            :style="workerAttr"
           >
             <div class="worker-gide-bg">
               <svg
@@ -102,8 +102,10 @@ export default {
     return {
       scrollTop: 0,
       scrollLeft: 0,
-      workerWidth: '1200px', // 画布的宽度
-      workerHeight: '800px'
+      workerAttr: {
+        width: '1300px',
+        height: '800px'
+      }
     };
   },
   mounted() {},
@@ -145,6 +147,8 @@ export default {
         transform-origin: center center;
         width: 100%;
         height: 100%;
+        position: absolute;
+        pointer-events: none;
       }
       .worker-gide-control {
         color: #000;
