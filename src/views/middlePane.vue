@@ -1,7 +1,6 @@
 <template>
   <div
     class="middle-pane"
-    @wheel.capture.stop="handlerWheel"
   >
     <!-- //给ruler的宽度多一点，这样防止滑动溢出 -->
     <Ruler
@@ -22,10 +21,10 @@
       >
         <div
           class="worker-gide-box"
-          :style="{width:'2400px',height:'1600px'}"
+          :style="{width:parseInt(workerAttr.width)*2+'px',height:parseInt(workerAttr.height)*2+'px'}"
         >
           <div
-            class="worker-gide"
+            class="worker-gide-content"
             :style="workerAttr"
           >
             <div class="worker-gide-bg">
@@ -76,8 +75,10 @@
             </div>
             <div
               class="worker-gide-control"
-              @click="test"
-            >控件
+            >
+              <div style="text-align:Center;width:100px;height:100px;border:1px solid #000">
+                控件
+              </div>
               {{ scrollTop }}
               <div style="text-align:center">
                 {{ scrollLeft }}
@@ -98,25 +99,31 @@ import 'vue-happy-scroll/docs/happy-scroll.css';
 export default {
   name: 'MiddlePane',
   components: { Ruler, HappyScroll },
+  props: {
+    zoomVal: {
+      type: Number,
+      required: true
+    }
+  },
   data() {
     return {
-      scrollTop: 0,
-      scrollLeft: 0,
+      scrollTop: 300, // x轴默认的边界 和 滚动条移动的值
+      scrollLeft: 800, // 同上
       workerAttr: {
-        width: '1300px',
-        height: '800px'
+        width: '1200px',
+        height: '800px',
+        transform: 'translate3d(798px, 298px,0)'
       }
     };
   },
+  watch: {
+    zoomVal: function(val) {
+      this.workerAttr.transform = `scale(${val / 100})`;
+      console.log('val', val);
+    }
+  },
   mounted() {},
   methods: {
-    // 鼠标滚轮滚动事件
-    handlerWheel(event) {
-      // console.log('handlerWheel -> event', event);
-    },
-    test(e) {
-      alert(e);
-    }
   }
 };
 </script>
@@ -135,7 +142,7 @@ export default {
     pointer-events: all;
     transition: none 0s ease 0s;
     overflow: auto;
-    .worker-gide {
+    .worker-gide-content {
       width: 100%;
       height: 100%;
       background-color: rgb(255, 255, 255);

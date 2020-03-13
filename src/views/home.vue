@@ -6,13 +6,19 @@
         <label>素材分析</label>
       </div>
       <div class="middle-operation">
-        <div class="btns">操作</div>
+        <div class="btns">
+          <div class="zoom-box">
+            <span @click="reduce">-</span>
+            <span>{{ zoomVal }}</span>
+            <span @click="plus">+</span>
+          </div>
+        </div>
       </div>
       <div class="right-operation">右侧</div>
     </div>
     <div class="main-content">
       <leftPane />
-      <MiddlePane />
+      <MiddlePane :zoom-val="zoomVal" />
       <RightPane />
     </div>
   </div>
@@ -29,6 +35,23 @@ export default {
     LeftPane,
     MiddlePane,
     RightPane
+  },
+  data() {
+    return {
+      zoomVal: 100
+    };
+  },
+  methods: {
+    reduce() {
+      if (this.zoomVal) {
+        this.zoomVal -= 10;
+      }
+    },
+    plus() {
+      if (this.zoomVal < 200) {
+        this.zoomVal += 10;
+      }
+    }
   }
 };
 </script>
@@ -52,6 +75,14 @@ export default {
       flex: 1;
       .btns {
         text-align: center;
+        .zoom-box{
+          span{
+          display: inline-block;
+          height: 100%;
+          margin: 0 4px;
+          padding: 0 4px;
+          }
+        }
       }
     }
     .right-operation {

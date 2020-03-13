@@ -130,8 +130,8 @@ export default {
         console.dir(rulerWrapper);
         const wrapperWidth = rulerWrapper.offsetWidth;
         const wrapperHeight = rulerWrapper.offsetHeight;
-        this.getCalcRevise(this.xScale, wrapperWidth);
-        this.getCalcRevise(this.yScale, wrapperHeight);
+        this.getCalcRevise(this.xScale, wrapperWidth, 'x');
+        this.getCalcRevise(this.yScale, wrapperHeight, 'y');
         this.getOffsetDistance();
         // 绑定删除辅助线事件
         this.delIndicatorLine('xLines');
@@ -144,8 +144,11 @@ export default {
       this.offsetY = this.$refs.vertical.getBoundingClientRect().y;
     },
     // 构建刻度
-    getCalcRevise(array, length) {
-      for (let i = 0; i <= length; i += 1) {
+    getCalcRevise(array, length, direction) {
+      console.log('getCalcRevise -> array, length', array, length);
+      // 800为边界值
+      const offsetVal = direction === 'x' ? this.moveX : this.moveY;
+      for (let i = -offsetVal; i <= length - offsetVal; i += 1) {
         if (i % this.setpNum === 0) {
           array.push({
             id: i
@@ -154,13 +157,18 @@ export default {
       }
     },
     horizontalMouseMove(e) {
+      // 此处算法需修正
       this.xIndicator = e.pageX - this.offsetX;
+      console.log('getOffsetDistance -> this.$refs.horizontal.getBoundingClientRect()', this.$refs.horizontal.getBoundingClientRect());
+
+      console.log('horizontalMouseMove -> this.offsetX', this.offsetX);
+      console.log('horizontalMouseMove -> e.pageX ', e.pageX);
     },
     horizontalMouseleave() {
       this.xIndicator = 0;
     },
     verticalMouseMove(e) {
-      this.yIndicator = e.pageY - this.offsetY;
+      this.yIndicator = e.pageY - this.moveY - this.offsetY;
     },
     verticalMouseleave() {
       this.yIndicator = 0;
