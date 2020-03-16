@@ -24,66 +24,72 @@
           :style="{width:parseInt(workerAttr.width)*2+'px',height:parseInt(workerAttr.height)*2+'px'}"
         >
           <div
-            class="worker-gide-content"
-            :style="workerAttr"
+            class="worker-gide-wrap"
+            :style="workerWrapStyle"
           >
-            <div class="worker-gide-bg">
-              <svg
-                width="100%"
-                height="100%"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <defs>
-                  <pattern
-                    id="smallGrid"
-                    width="5"
-                    height="5"
-                    patternUnits="userSpaceOnUse"
-                  >
-                    <path
-                      d="M 5 0 L 0 0 0 5"
-                      fill="none"
-                      stroke="rgba(207, 207, 207, 0.3)"
-                      stroke-width="1"
-                    />
-                  </pattern>
-                  <pattern
-                    id="grid"
-                    width="25"
-                    height="25"
-                    patternUnits="userSpaceOnUse"
-                  >
-                    <rect
-                      width="25"
-                      height="25"
-                      fill="url(#smallGrid)"
-                    />
-                    <path
-                      d="M 25 0 L 0 0 0 25"
-                      fill="none"
-                      stroke="rgba(186, 186, 186, 0.5)"
-                      stroke-width="1"
-                    />
-                  </pattern>
-                </defs>
-                <rect
+            <div
+              class="worker-gide-content"
+              :style="workerAttr"
+            >
+              <div class="worker-gide-bg">
+                <svg
                   width="100%"
                   height="100%"
-                  fill="url(#grid)"
-                />
-              </svg>
-            </div>
-            <div
-              class="worker-gide-control"
-            >
-              <div style="text-align:Center;width:100px;height:100px;border:1px solid #000">
-                控件
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <defs>
+                    <pattern
+                      id="smallGrid"
+                      width="5"
+                      height="5"
+                      patternUnits="userSpaceOnUse"
+                    >
+                      <path
+                        d="M 5 0 L 0 0 0 5"
+                        fill="none"
+                        stroke="rgba(207, 207, 207, 0.3)"
+                        stroke-width="1"
+                      />
+                    </pattern>
+                    <pattern
+                      id="grid"
+                      width="25"
+                      height="25"
+                      patternUnits="userSpaceOnUse"
+                    >
+                      <rect
+                        width="25"
+                        height="25"
+                        fill="url(#smallGrid)"
+                      />
+                      <path
+                        d="M 25 0 L 0 0 0 25"
+                        fill="none"
+                        stroke="rgba(186, 186, 186, 0.5)"
+                        stroke-width="1"
+                      />
+                    </pattern>
+                  </defs>
+                  <rect
+                    width="100%"
+                    height="100%"
+                    fill="url(#grid)"
+                  />
+                </svg>
               </div>
-              {{ scrollTop }}
-              <div style="text-align:center">
-                {{ scrollLeft }}
+              <div
+                class="worker-gide-control"
+              >
+                <div style="text-align:Center;width:100px;height:100px;border:1px solid #000">
+                  控件
+                </div>
+                {{ scrollTop }}
+                <div style="text-align:center">
+                  {{ scrollLeft }}
+                </div>
               </div>
             </div>
+
           </div>
         </div>
       </happy-scroll>
@@ -113,12 +119,15 @@ export default {
         width: '1200px',
         height: '800px',
         transform: 'translate3d(798px, 298px,0)'
+      },
+      workerWrapStyle: {
+        transform: 'scale(1)'
       }
     };
   },
   watch: {
     zoomVal: function(val) {
-      this.workerAttr.transform = `scale(${val / 100})`;
+      this.workerWrapStyle.transform = `scale(${val / 100})`;
       console.log('val', val);
     }
   },

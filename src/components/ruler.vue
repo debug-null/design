@@ -13,7 +13,7 @@
           :style="xStyleFormatter"
           @mousemove="horizontalMouseMove"
           @mouseleave="horizontalMouseleave"
-          @click="indicatorClick('x')"
+          @click="indicatorClick('x',$event)"
         >
           <li
             v-for="(item, index) in xScale"
@@ -26,13 +26,14 @@
         <div
           v-show="xIndicator"
           class="indicator"
-          :style="{left: xIndicator + 20 + 'px'}"
+          :style="{left: xIndicator + 'px'}"
         >
-          <span>{{ xIndicator+moveX }}</span>
+          <span>{{ xIndicatorVal }}</span>
         </div>
         <div
           ref="xLines"
           class="lines"
+          :style="{left: -(moveX - initMoveX)+'px'}"
         />
       </div>
 
@@ -56,13 +57,14 @@
         <div
           v-show="yIndicator"
           class="indicator"
-          :style="{top: yIndicator + 20 + 'px'}"
+          :style="{top: yIndicator + 'px'}"
         >
-          <span>{{ yIndicator+moveY }}</span>
+          <span>{{ yIndicatorVal }}</span>
         </div>
         <div
           ref="yLines"
           class="lines"
+          :style="{top: -(moveY - initMoveY)+'px'}"
         />
       </div>
     </div>
@@ -100,18 +102,25 @@ export default {
       yScale: [],
       offsetX: 0, // 偏移距离
       offsetY: 0,
-      xIndicator: 0, // x 指示
-      yIndicator: 0
+      xIndicator: 0, // x 指示线的left
+      yIndicator: 0, // y 指示线的top
+      xIndicatorVal: 0, // x 指示线的val
+      yIndicatorVal: 0, // y 指示线的val
+      initMoveX: 0, // 存储 moveX 的初始值
+      initMovey: 0 // 存储 moveY 的初始值
     };
   },
   computed: {
+    // x 标尺需要移动的距离
     xStyleFormatter() {
       const translateX = this.moveX;
+      console.log('xStyleFormatter -> translateX', translateX);
       return {
         width: this.layoutAttr.width,
         transform: `translate(-${translateX}px, 0)`
       };
     },
+    // y 标尺需要移动的距离
     yStyleFormatter() {
       const translateY = this.moveY;
       return {
@@ -119,6 +128,11 @@ export default {
         transform: `translate(0px, -${translateY}px)`
       };
     }
+  },
+  created() {
+    // 存储下初始值，计算使用
+    this.initMoveX = this.moveX;
+    this.initMoveY = this.moveY;
   },
   mounted() {
     this.initRuler();
@@ -157,26 +171,31 @@ export default {
       }
     },
     horizontalMouseMove(e) {
-      // 此处算法需修正
-      this.xIndicator = e.pageX - this.offsetX;
-      console.log('getOffsetDistance -> this.$refs.horizontal.getBoundingClientRect()', this.$refs.horizontal.getBoundingClientRect());
-
-      console.log('horizontalMouseMove -> this.offsetX', this.offsetX);
-      console.log('horizontalMouseMove -> e.pageX ', e.pageX);
+      //  光标距离左上角的距离 - 元素的偏移距离 - 标尺区域的初始偏移距离 + 值元素的宽度
+      this.xIndicator = e.pageX - this.offsetX - this.initMoveX + 20;
+      // 标尺线的移动距离 + 标尺移动的距离  - 标尺区域的初始偏移距离 - 值元素的高度
+      this.xIndicatorVal = this.xIndicator + this.moveX - this.initMoveX - 20;
     },
     horizontalMouseleave() {
       this.xIndicator = 0;
     },
     verticalMouseMove(e) {
-      this.yIndicator = e.pageY - this.moveY - this.offsetY;
+      // this.yIndicator = e.pageY - this.offsetY;
+      //  光标距离左上角的距离 - 元素的偏移距离 - 标尺区域的初始偏移距离 + 值元素的宽度
+      this.yIndicator = e.pageY - this.offsetY - this.initMoveY + 20;
+      // 标尺线的移动距离 + 标尺移动的距离  - 标尺区域的初始偏移距离- 值元素的高度
+      this.yIndicatorVal = this.yIndicator + this.moveY - this.initMoveY - 20;
     },
     verticalMouseleave() {
       this.yIndicator = 0;
     },
     // 点击生成辅助线
-    indicatorClick(direction) {
+    indicatorClick(direction, even) {
+      console.log('indicatorClick -> even', even);
       const linesClassName = direction + 'Lines';
-      const indicator = direction + 'Indicator';
+      const indicator = direction + 'IndicatorVal';
+      console.log('indicatorClick -> indicator', indicator);
+      console.log('indicatorClick -> indicator', this[indicator]);
       const lines = this.$refs[linesClassName];
       const Line = document.createElement('div');
       Line.className = 'line';
@@ -325,6 +344,7 @@ export default {
       }
     }
     .lines{
+      position: relative;
       .line{
         position: absolute;
         top: 0;

@@ -91,7 +91,7 @@ export default {
   }
   .main-content {
     display: flex;
-    height: 100%;
+    height: calc(100% - 50px);
     color: #fff;
     .left-pane {
       background-color: #212734;
