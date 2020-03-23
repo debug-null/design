@@ -93,6 +93,11 @@ export default {
     moveY: {
       type: Number,
       default: 0
+    },
+    // 缩放的大小
+    zoomVal: {
+      type: Number,
+      default: 0
     }
   },
   data() {
@@ -113,8 +118,7 @@ export default {
   computed: {
     // x 标尺需要移动的距离
     xStyleFormatter() {
-      const translateX = this.moveX;
-      console.log('xStyleFormatter -> translateX', translateX);
+      var translateX = this.moveX;
       return {
         width: this.layoutAttr.width,
         transform: `translate(-${translateX}px, 0)`
@@ -129,6 +133,13 @@ export default {
       };
     }
   },
+  watch: {
+    zoomVal: function(val) {
+      // 求出标尺的间隔数
+      this.setpNum = Math.round(100 / (val / 100));
+      this.initRuler();
+    }
+  },
   created() {
     // 存储下初始值，计算使用
     this.initMoveX = this.moveX;
@@ -141,9 +152,10 @@ export default {
     initRuler() {
       this.$nextTick(() => {
         const rulerWrapper = this.$refs.rulerWrapper;
-        console.dir(rulerWrapper);
         const wrapperWidth = rulerWrapper.offsetWidth;
         const wrapperHeight = rulerWrapper.offsetHeight;
+        this.xScale = [];
+        this.yScale = [];
         this.getCalcRevise(this.xScale, wrapperWidth, 'x');
         this.getCalcRevise(this.yScale, wrapperHeight, 'y');
         this.getOffsetDistance();
@@ -160,10 +172,10 @@ export default {
     // 构建刻度
     getCalcRevise(array, length, direction) {
       console.log('getCalcRevise -> array, length', array, length);
-      // 800为边界值
       const offsetVal = direction === 'x' ? this.moveX : this.moveY;
       for (let i = -offsetVal; i <= length - offsetVal; i += 1) {
         if (i % this.setpNum === 0) {
+          console.log('getCalcRevise -> this.setpNum', this.setpNum);
           array.push({
             id: i
           });
@@ -174,7 +186,9 @@ export default {
       //  光标距离左上角的距离 - 元素的偏移距离 - 标尺区域的初始偏移距离 + 值元素的宽度
       this.xIndicator = e.pageX - this.offsetX - this.initMoveX + 20;
       // 标尺线的移动距离 + 标尺移动的距离  - 标尺区域的初始偏移距离 - 值元素的高度
-      this.xIndicatorVal = this.xIndicator + this.moveX - this.initMoveX - 20;
+      const xIndicatorVal = this.xIndicator + this.moveX - this.initMoveX - 20;
+      const setpNum = (100 - this.setpNum);
+      this.xIndicatorVal = xIndicatorVal - setpNum;
     },
     horizontalMouseleave() {
       this.xIndicator = 0;
@@ -191,11 +205,8 @@ export default {
     },
     // 点击生成辅助线
     indicatorClick(direction, even) {
-      console.log('indicatorClick -> even', even);
       const linesClassName = direction + 'Lines';
       const indicator = direction + 'IndicatorVal';
-      console.log('indicatorClick -> indicator', indicator);
-      console.log('indicatorClick -> indicator', this[indicator]);
       const lines = this.$refs[linesClassName];
       const Line = document.createElement('div');
       Line.className = 'line';

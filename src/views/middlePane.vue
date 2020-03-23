@@ -7,6 +7,7 @@
       :layout-attr="{width:parseInt(workerAttr.width)*2+'px',height:parseInt(workerAttr.height)*2+'px'}"
       :move-x="scrollLeft"
       :move-y="scrollTop"
+      :zoom-val="zoomVal"
     />
 
     <div
@@ -116,9 +117,8 @@ export default {
       scrollTop: 300, // x轴默认的边界 和 滚动条移动的值
       scrollLeft: 800, // 同上
       workerAttr: {
-        width: '1200px',
-        height: '800px',
-        transform: 'translate3d(798px, 298px,0)'
+        width: '2400px',
+        height: '1100px'
       },
       workerWrapStyle: {
         transform: 'scale(1)'
@@ -128,8 +128,10 @@ export default {
   watch: {
     zoomVal: function(val) {
       this.workerWrapStyle.transform = `scale(${val / 100})`;
-      console.log('val', val);
     }
+  },
+  created() {
+    this.workerAttr.transform = `translate(${this.scrollLeft}px,${this.scrollTop}px)`;
   },
   mounted() {},
   methods: {
