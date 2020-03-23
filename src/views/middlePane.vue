@@ -5,8 +5,8 @@
     <!-- //给ruler的宽度多一点，这样防止滑动溢出 -->
     <Ruler
       :layout-attr="{width:parseInt(workerAttr.width)*2+'px',height:parseInt(workerAttr.height)*2+'px'}"
-      :move-x="scrollLeft"
-      :move-y="scrollTop"
+      :move-x="offsetVal.scrollLeft"
+      :move-y="offsetVal.scrollTop"
       :zoom-val="zoomVal"
     />
 
@@ -16,8 +16,8 @@
       <happy-scroll
         color="rgba(69, 70, 71,.8)"
         size="6"
-        :scroll-top.sync="scrollTop"
-        :scroll-left.sync="scrollLeft"
+        :scroll-top.sync="offsetVal.scrollTop"
+        :scroll-left.sync="offsetVal.scrollLeft"
         resize
       >
         <div
@@ -78,16 +78,9 @@
                   />
                 </svg>
               </div>
-              <div
-                class="worker-gide-control"
-              >
-                <div style="text-align:Center;width:100px;height:100px;border:1px solid #000">
-                  控件
-                </div>
-                {{ scrollTop }}
-                <div style="text-align:center">
-                  {{ scrollLeft }}
-                </div>
+              <div class="worker-gide-control">
+                <slot />
+                <div>dddd</div>
               </div>
             </div>
 
@@ -107,19 +100,24 @@ export default {
   name: 'MiddlePane',
   components: { Ruler, HappyScroll },
   props: {
+    // 缩放-暂不开放
     zoomVal: {
       type: Number,
+      required: true
+    },
+    // 画布的宽高
+    workerAttr: {
+      type: Object,
+      required: true
+    },
+    // 边界
+    offsetVal: {
+      type: Object,
       required: true
     }
   },
   data() {
     return {
-      scrollTop: 300, // x轴默认的边界 和 滚动条移动的值
-      scrollLeft: 800, // 同上
-      workerAttr: {
-        width: '2400px',
-        height: '1100px'
-      },
       workerWrapStyle: {
         transform: 'scale(1)'
       }
@@ -131,7 +129,7 @@ export default {
     }
   },
   created() {
-    this.workerAttr.transform = `translate(${this.scrollLeft}px,${this.scrollTop}px)`;
+    this.workerAttr.transform = `translate(${this.offsetVal.scrollLeft}px,${this.offsetVal.scrollTop}px)`;
   },
   mounted() {},
   methods: {
@@ -165,7 +163,6 @@ export default {
         transform-origin: center center;
         width: 100%;
         height: 100%;
-        position: absolute;
         pointer-events: none;
       }
       .worker-gide-control {

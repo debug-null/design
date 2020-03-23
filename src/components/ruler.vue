@@ -154,6 +154,7 @@ export default {
         const rulerWrapper = this.$refs.rulerWrapper;
         const wrapperWidth = rulerWrapper.offsetWidth;
         const wrapperHeight = rulerWrapper.offsetHeight;
+        console.log('initRuler -> wrapperHeight', wrapperWidth);
         this.xScale = [];
         this.yScale = [];
         this.getCalcRevise(this.xScale, wrapperWidth, 'x');
