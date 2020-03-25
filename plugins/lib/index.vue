@@ -12,28 +12,35 @@
 <script>
 import MiddlePane from './middlePane';
 export default {
-  name: 'Home',
+  name: 'DesignRuler',
   components: {
     MiddlePane
   },
+  props: {
+    // 画布的宽高
+    workerAttr: {
+      type: Object,
+      default: function() {
+        return {
+          width: '1200px',
+          height: '800px'
+        };
+      }
+    },
+    // 边界
+    offsetVal: {
+      type: Object,
+      default: function() {
+        return {
+          scrollTop: 300, // x轴默认的边界 和 滚动条移动的值
+          scrollLeft: 300 // 同上
+        };
+      }
+    }
+  },
   data() {
     return {
-      zoomVal: 100,
-      // 画布的宽高
-      workerAttr: {
-        width: '1200px',
-        height: '800px'
-      },
-      // 边界
-      offsetVal: {
-        type: Object,
-        default: function() {
-          return {
-            scrollTop: 300, // x轴默认的边界 和 滚动条移动的值
-            scrollLeft: 300 // 同上
-          };
-        }
-      }
+      zoomVal: 100
     };
   },
   methods: {

@@ -1,15 +1,27 @@
 <template>
   <div id="app">
-    <Home />
+    <DesignRuler
+      :offset-val="offset"
+      :worker-attr="workerAttr"
+    />
   </div>
 </template>
 
 <script>
-import Home from './views/home';
+
 export default {
   name: 'App',
-  components: {
-    Home
+  data() {
+    return {
+      workerAttr: {
+        width: '800px',
+        height: '600px'
+      },
+      offset: {
+        scrollTop: 400, // x轴默认的边界 和 滚动条移动的值
+        scrollLeft: 400 // 同上
+      }
+    };
   }
 };
 </script>

@@ -174,6 +174,7 @@ export default {
     getCalcRevise(array, length, direction) {
       console.log('getCalcRevise -> array, length', array, length);
       const offsetVal = direction === 'x' ? this.moveX : this.moveY;
+      console.log('getCalcRevise -> offsetVal', offsetVal);
       for (let i = -offsetVal; i <= length - offsetVal; i += 1) {
         if (i % this.setpNum === 0) {
           console.log('getCalcRevise -> this.setpNum', this.setpNum);
