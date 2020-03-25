@@ -1,6 +1,6 @@
 {
   "name": "design-ruler",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "index.js",
   "directories": {
@@ -11,5 +11,8 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "vue-happy-scroll": "^2.1.1"
+  }
 }
