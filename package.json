@@ -1,5 +1,5 @@
 {
-  "name": "design-ruler",
+  "name": "ruler",
   "version": "1.0.2",
   "private": false,
   "scripts": {
@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.4",
+    "design-ruler": "0.0.1",
     "normalize.css": "^8.0.1",
     "vue": "^2.6.11"
   },
