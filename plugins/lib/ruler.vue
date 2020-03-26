@@ -200,7 +200,6 @@ export default {
       this.xIndicator = 0;
     },
     verticalMouseMove(e) {
-      // this.yIndicator = e.pageY - this.offsetY;
       //  光标距离左上角的距离 - 元素的偏移距离 - 标尺区域的初始偏移距离 + 值元素的宽度
       this.yIndicator = e.pageY - this.offsetY - this.initMoveY + 20;
       // 标尺线的移动距离 + 标尺移动的距离  - 标尺区域的初始偏移距离- 值元素的高度
@@ -353,8 +352,6 @@ export default {
     position: relative;
     .indicator {
       position: absolute;
-      top: 22px;
-      left: 24px;
       z-index: 1;
       span {
         color: #fff;
@@ -381,6 +378,8 @@ export default {
     .indicator {
       height: 100vh;
       opacity: 0.5;
+      top: 22px;
+      left: 24px;
     }
     .lines{
       .line{
@@ -394,6 +393,13 @@ export default {
       height: 1px;
       width: 100%;
       opacity: 0.5;
+      top: 22px;
+      left: 20px;
+      span{
+        transform: rotate(90deg);
+        margin-left: -8px;
+        margin-top: 12px;
+      }
     }
      .lines{
       .line{

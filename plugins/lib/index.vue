@@ -26,7 +26,7 @@ export default {
       type: Object,
       default: function() {
         return {
-          width: '1200px',
+          width: '1000px',
           height: '800px'
         };
       }
@@ -46,7 +46,7 @@ export default {
       default: function() {
         return {
           scrollTop: 300, // x轴默认的边界 和 滚动条移动的值
-          scrollLeft: 300 // 同上
+          scrollLeft: 400 // 同上
         };
       }
     },
@@ -59,23 +59,11 @@ export default {
           indicatorLineColor: '#fb4e43'
         };
       }
-    }
-  },
-  data() {
-    return {
-      zoomVal: 100
-    };
-  },
-  methods: {
-    reduce() {
-      if (this.zoomVal) {
-        this.zoomVal -= 10;
-      }
     },
-    plus() {
-      if (this.zoomVal < 200) {
-        this.zoomVal += 10;
-      }
+    // 缩放的大小
+    zoomVal: {
+      type: Number,
+      default: 0
     }
   }
 };

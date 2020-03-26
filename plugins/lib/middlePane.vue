@@ -101,7 +101,7 @@ export default {
   name: 'MiddlePane',
   components: { Ruler, HappyScroll },
   props: {
-    // 缩放-暂不开放
+    // 缩放
     zoomVal: {
       type: Number,
       required: true
