@@ -1,6 +1,7 @@
 <template>
   <div
     class="middle-pane"
+    :style="paneStyle"
   >
     <!-- //给ruler的宽度多一点，这样防止滑动溢出 -->
     <Ruler
@@ -8,6 +9,7 @@
       :move-x="offsetVal.scrollLeft"
       :move-y="offsetVal.scrollTop"
       :zoom-val="zoomVal"
+      :rule-attr-style="ruleAttrStyle"
     />
 
     <div
@@ -80,7 +82,6 @@
               </div>
               <div class="worker-gide-control">
                 <slot />
-                <div>dddd</div>
               </div>
             </div>
 
@@ -114,6 +115,14 @@ export default {
     offsetVal: {
       type: Object,
       required: true
+    },
+    paneStyle: {
+      type: Object,
+      required: true
+    },
+    ruleAttrStyle: {
+      type: Object,
+      required: true
     }
   },
   data() {
@@ -131,7 +140,6 @@ export default {
   created() {
     this.workerAttr.transform = `translate(${this.offsetVal.scrollLeft}px,${this.offsetVal.scrollTop}px)`;
   },
-  mounted() {},
   methods: {
   }
 };
@@ -140,7 +148,6 @@ export default {
 .middle-pane {
   position: relative;
   overflow: hidden;
-  background: #2c2b32;
   .worker-container {
     position: absolute;
     transform-origin: 0px 0px;
@@ -160,6 +167,7 @@ export default {
       margin: 21px 0 0 21px;
       border-radius: 2px;
       .worker-gide-bg {
+        position: absolute;
         transform-origin: center center;
         width: 100%;
         height: 100%;

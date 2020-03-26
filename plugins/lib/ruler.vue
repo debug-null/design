@@ -26,7 +26,7 @@
         <div
           v-show="xIndicator"
           class="indicator"
-          :style="{left: xIndicator + 'px'}"
+          :style="{left: xIndicator + 'px',width: ruleAttrStyle.indicatorLineWidth, backgroundColor: ruleAttrStyle.indicatorLineColor}"
         >
           <span>{{ xIndicatorVal }}</span>
         </div>
@@ -57,7 +57,7 @@
         <div
           v-show="yIndicator"
           class="indicator"
-          :style="{top: yIndicator + 'px'}"
+          :style="{top: yIndicator + 'px',height: ruleAttrStyle.indicatorLineWidth, backgroundColor: ruleAttrStyle.indicatorLineColor}"
         >
           <span>{{ yIndicatorVal }}</span>
         </div>
@@ -98,6 +98,10 @@ export default {
     zoomVal: {
       type: Number,
       default: 0
+    },
+    ruleAttrStyle: {
+      type: Object,
+      required: true
     }
   },
   data() {
@@ -214,8 +218,12 @@ export default {
       Line.className = 'line';
       if (direction === 'x') {
         Line.style.left = `${this[indicator] + 20}px`;
+        Line.style.width = this.ruleAttrStyle.indicatorLineWidth;
+        Line.style.backgroundColor = this.ruleAttrStyle.indicatorLineColor;
       } else {
         Line.style.top = `${this[indicator] + 20}px`;
+        Line.style.height = this.ruleAttrStyle.indicatorLineWidth;
+        Line.style.backgroundColor = this.ruleAttrStyle.indicatorLineColor;
       }
       lines.appendChild(Line);
     },
@@ -249,6 +257,8 @@ export default {
       flex-grow: 0;
       flex-shrink: 0;
       flex-basis: 51px;
+      list-style: none;
+      box-sizing: unset;
       span {
         font-size: 12px;
         color: rgba(255, 255, 255, 0.5);
@@ -327,7 +337,6 @@ export default {
           &::before {
             content: "";
             position: absolute;
-            width: 1px;
             height: 8px;
             display: block;
             top: 0;
@@ -362,8 +371,6 @@ export default {
         position: absolute;
         top: 0;
         left: 0px;
-
-        background-color: #363e50;
         opacity: 0.5;
         z-index: 1
       }
@@ -373,14 +380,11 @@ export default {
   .horizontal-box {
     .indicator {
       height: 100vh;
-      width: 1px;
-      background-color: #363e50;
       opacity: 0.5;
     }
     .lines{
       .line{
         height: 100vh;
-        width: 1px;
         cursor: col-resize;
       }
     }
@@ -389,7 +393,6 @@ export default {
     .indicator {
       height: 1px;
       width: 100%;
-      background-color: #363e50;
       opacity: 0.5;
     }
      .lines{

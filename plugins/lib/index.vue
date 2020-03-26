@@ -5,7 +5,11 @@
         :zoom-val="zoomVal"
         :worker-attr="workerAttr"
         :offset-val="offsetVal"
-      />
+        :pane-style="paneStyle"
+        :rule-attr-style="ruleAttrStyle"
+      >
+        <slot />
+      </MiddlePane>
     </div>
   </div>
 </template>
@@ -27,6 +31,15 @@ export default {
         };
       }
     },
+    // 面板样式
+    paneStyle: {
+      type: Object,
+      default: () => {
+        return {
+          backgroundColor: '#2c2b32'
+        };
+      }
+    },
     // 边界
     offsetVal: {
       type: Object,
@@ -34,6 +47,16 @@ export default {
         return {
           scrollTop: 300, // x轴默认的边界 和 滚动条移动的值
           scrollLeft: 300 // 同上
+        };
+      }
+    },
+    // 标尺属性样式
+    ruleAttrStyle: {
+      type: Object,
+      default: function() {
+        return {
+          indicatorLineWidth: '1px',
+          indicatorLineColor: '#fb4e43'
         };
       }
     }
@@ -59,6 +82,7 @@ export default {
 </script>
 <style scoped lang="scss">
 .ruler-page {
+  width: 100%;
   height: 100%;
   font-size: 14px;
   .main-content {
