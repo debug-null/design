@@ -138,10 +138,16 @@ export default {
     }
   },
   watch: {
-    zoomVal: function(val) {
+    zoomVal: {
+      handler: function(val) {
       // 求出标尺的间隔数
-      this.setpNum = Math.round(100 / (val / 100));
-      this.initRuler();
+        this.setpNum = Math.round(100 / (val / 100));
+        this.initRuler();
+      },
+      immediate: true
+    },
+    setpNum: function(val) {
+      this.$emit('setpNumChange', val);
     }
   },
   created() {
@@ -177,11 +183,11 @@ export default {
     // 构建刻度
     getCalcRevise(array, length, direction) {
       console.log('getCalcRevise -> array, length', array, length);
-      const offsetVal = direction === 'x' ? this.moveX : this.moveY;
-      console.log('getCalcRevise -> offsetVal', offsetVal);
-      for (let i = -offsetVal; i <= length - offsetVal; i += 1) {
+      // 左右均分当前像素
+      for (let i = -(length / 3); i <= (length - length / 3); i += 1) {
+        // console.log('getCalcRevise -> i', i);
         if (i % this.setpNum === 0) {
-          console.log('getCalcRevise -> this.setpNum', this.setpNum);
+          // console.log('getCalcRevise -> this.setpNum', this.setpNum, i);
           array.push({
             id: i
           });

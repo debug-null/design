@@ -5,11 +5,12 @@
   >
     <!-- //给ruler的宽度多一点，这样防止滑动溢出 -->
     <Ruler
-      :layout-attr="{width:parseInt(workerAttr.width)*2+'px',height:parseInt(workerAttr.height)*2+'px'}"
+      :layout-attr="{width:parseInt(workerAttr.width)*3+'px',height:parseInt(workerAttr.height)*3+'px'}"
       :move-x="offsetVal.scrollLeft"
       :move-y="offsetVal.scrollTop"
       :zoom-val="zoomVal"
       :rule-attr-style="ruleAttrStyle"
+      @setpNumChange="setpNumChange"
     />
 
     <div
@@ -24,7 +25,7 @@
       >
         <div
           class="worker-gide-box"
-          :style="{width:parseInt(workerAttr.width)*2+'px',height:parseInt(workerAttr.height)*2+'px'}"
+          :style="{width:parseInt(workerAttr.width)*3+'px',height:parseInt(workerAttr.height)*3+'px'}"
         >
           <div
             class="worker-gide-wrap"
@@ -133,14 +134,21 @@ export default {
     };
   },
   watch: {
-    zoomVal: function(val) {
-      this.workerWrapStyle.transform = `scale(${val / 100})`;
+    zoomVal: {
+      handler: function(val) {
+        this.workerWrapStyle.transform = `scale(${val / 100})`;
+      },
+      immediate: true
     }
   },
   created() {
-    this.workerAttr.transform = `translate(${this.offsetVal.scrollLeft}px,${this.offsetVal.scrollTop}px)`;
+    this.workerAttr.transform = `translate(${parseInt(this.workerAttr.width)}px,${parseInt(this.workerAttr.height)}px)`;
   },
   methods: {
+    setpNumChange(val) {
+      console.log('val', val, this.zoomVal);
+      this.workerAttr.transform = `translate(${400 + val / 2}px,${this.offsetVal.scrollTop}px)`;
+    }
   }
 };
 </script>

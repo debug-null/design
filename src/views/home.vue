@@ -19,7 +19,9 @@
     <div class="main-content">
       <leftPane />
       <div class="middle-pane">
-        <designRuler :zoom-val="zoomVal" />
+        <designRuler :zoom-val="zoomVal">
+          <div style="width:100px;height:100px;background-color:#ddd;position:absolute" />
+        </designRuler>
       </div>
       <RightPane />
     </div>
