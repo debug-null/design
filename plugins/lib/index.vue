@@ -3,7 +3,6 @@
     <div class="main-content">
       <MiddlePane
         :zoom-val="zoomVal"
-        :worker-attr="workerAttr"
         :offset-val="offsetVal"
         :pane-style="paneStyle"
         :rule-attr-style="ruleAttrStyle"
@@ -20,9 +19,14 @@ export default {
   components: {
     MiddlePane
   },
+  provide() {
+    return {
+      canvasStyle: this.canvasStyle
+    };
+  },
   props: {
     // 画布的宽高
-    workerAttr: {
+    canvasStyle: {
       type: Object,
       default: function() {
         return {
@@ -40,13 +44,13 @@ export default {
         };
       }
     },
-    // 边界
+    // 边界：也就是画布区域 在整个制图区的位置
     offsetVal: {
       type: Object,
       default: function() {
         return {
-          scrollTop: 300, // x轴默认的边界 和 滚动条移动的值
-          scrollLeft: 400 // 同上
+          scrollTop: 800, // x轴默认的边界
+          scrollLeft: 1000 // 同上
         };
       }
     },

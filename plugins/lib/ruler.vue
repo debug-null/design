@@ -28,12 +28,12 @@
           class="indicator"
           :style="{left: xIndicator + 'px',width: ruleAttrStyle.indicatorLineWidth, backgroundColor: ruleAttrStyle.indicatorLineColor}"
         >
-          <span>{{ xIndicatorVal }}</span>
+          <span :style="{backgroundColor: ruleAttrStyle.indicatorLineColor}">{{ xIndicatorVal }}</span>
         </div>
         <div
           ref="xLines"
           class="lines"
-          :style="{left: -(moveX - initMoveX)+'px'}"
+          :style="{left: -(moveX - initMoveX )+'px'}"
         />
       </div>
 
@@ -59,7 +59,7 @@
           class="indicator"
           :style="{top: yIndicator + 'px',height: ruleAttrStyle.indicatorLineWidth, backgroundColor: ruleAttrStyle.indicatorLineColor}"
         >
-          <span>{{ yIndicatorVal }}</span>
+          <span :style="{backgroundColor: ruleAttrStyle.indicatorLineColor}">{{ yIndicatorVal }}</span>
         </div>
         <div
           ref="yLines"
@@ -73,6 +73,7 @@
 <script>
 export default {
   name: 'Ruler',
+  inject: ['canvasStyle'], // 画布的宽高
   props: {
     // 标尺的尺寸
     layoutAttr: {
@@ -197,10 +198,10 @@ export default {
     horizontalMouseMove(e) {
       //  光标距离左上角的距离 - 元素的偏移距离 - 标尺区域的初始偏移距离 + 值元素的宽度
       this.xIndicator = e.pageX - this.offsetX - this.initMoveX + 20;
-      // 标尺线的移动距离 + 标尺移动的距离  - 标尺区域的初始偏移距离 - 值元素的高度
-      const xIndicatorVal = this.xIndicator + this.moveX - this.initMoveX - 20;
-      const setpNum = (100 - this.setpNum);
-      this.xIndicatorVal = xIndicatorVal - setpNum;
+      // 标尺线的移动距离 + 标尺移动的距离  - 画布的宽度 - 值元素的高度
+      const xIndicatorVal = this.xIndicator + this.moveX - parseInt(this.canvasStyle.width) - 20;
+      // const setpNum = (100 - this.setpNum);
+      this.xIndicatorVal = xIndicatorVal;
     },
     horizontalMouseleave() {
       this.xIndicator = 0;
@@ -208,8 +209,8 @@ export default {
     verticalMouseMove(e) {
       //  光标距离左上角的距离 - 元素的偏移距离 - 标尺区域的初始偏移距离 + 值元素的宽度
       this.yIndicator = e.pageY - this.offsetY - this.initMoveY + 20;
-      // 标尺线的移动距离 + 标尺移动的距离  - 标尺区域的初始偏移距离- 值元素的高度
-      this.yIndicatorVal = this.yIndicator + this.moveY - this.initMoveY - 20;
+      // 标尺线的移动距离 + 标尺移动的距离  - 画布的高度- 值元素的高度
+      this.yIndicatorVal = this.yIndicator + this.moveY - parseInt(this.canvasStyle.height) - 20;
     },
     verticalMouseleave() {
       this.yIndicator = 0;
@@ -404,7 +405,7 @@ export default {
       span{
         transform: rotate(90deg);
         margin-left: -8px;
-        margin-top: 12px;
+        margin-top: 14px;
       }
     }
      .lines{

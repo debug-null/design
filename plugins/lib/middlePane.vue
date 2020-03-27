@@ -5,7 +5,10 @@
   >
     <!-- //给ruler的宽度多一点，这样防止滑动溢出 -->
     <Ruler
-      :layout-attr="{width:parseInt(workerAttr.width)*3+'px',height:parseInt(workerAttr.height)*3+'px'}"
+      :layout-attr="{
+        width: parseInt(canvasStyle.width) * 3 + 'px',
+        height: parseInt(canvasStyle.height) * 3 + 'px'
+      }"
       :move-x="offsetVal.scrollLeft"
       :move-y="offsetVal.scrollTop"
       :zoom-val="zoomVal"
@@ -13,9 +16,7 @@
       @setpNumChange="setpNumChange"
     />
 
-    <div
-      class="worker-container"
-    >
+    <div class="worker-container">
       <happy-scroll
         color="rgba(69, 70, 71,.8)"
         size="6"
@@ -25,7 +26,10 @@
       >
         <div
           class="worker-gide-box"
-          :style="{width:parseInt(workerAttr.width)*3+'px',height:parseInt(workerAttr.height)*3+'px'}"
+          :style="{
+            width: parseInt(canvasStyle.width) * 3 + 'px',
+            height: parseInt(canvasStyle.height) * 3 + 'px'
+          }"
         >
           <div
             class="worker-gide-wrap"
@@ -33,7 +37,7 @@
           >
             <div
               class="worker-gide-content"
-              :style="workerAttr"
+              :style="canvasStyle"
             >
               <div class="worker-gide-bg">
                 <svg
@@ -85,11 +89,9 @@
                 <slot />
               </div>
             </div>
-
           </div>
         </div>
       </happy-scroll>
-
     </div>
   </div>
 </template>
@@ -100,16 +102,12 @@ import { HappyScroll } from 'vue-happy-scroll';
 import 'vue-happy-scroll/docs/happy-scroll.css';
 export default {
   name: 'MiddlePane',
+  inject: ['canvasStyle'],
   components: { Ruler, HappyScroll },
   props: {
     // 缩放
     zoomVal: {
       type: Number,
-      required: true
-    },
-    // 画布的宽高
-    workerAttr: {
-      type: Object,
       required: true
     },
     // 边界
@@ -142,12 +140,16 @@ export default {
     }
   },
   created() {
-    this.workerAttr.transform = `translate(${parseInt(this.workerAttr.width)}px,${parseInt(this.workerAttr.height)}px)`;
+    this.canvasStyle.transform = `translate(${parseInt(
+      this.canvasStyle.width
+    )}px,${parseInt(this.canvasStyle.height)}px)`;
   },
   methods: {
     setpNumChange(val) {
       console.log('val', val, this.zoomVal);
-      this.workerAttr.transform = `translate(${400 + val / 2}px,${this.offsetVal.scrollTop}px)`;
+      this.canvasStyle.transform = `translate(${400 + val / 2}px,${
+        this.offsetVal.scrollTop
+      }px)`;
     }
   }
 };
