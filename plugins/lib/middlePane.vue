@@ -1,28 +1,35 @@
 <template>
   <div
     class="middle-pane"
+    :style="paneStyle"
   >
     <!-- //给ruler的宽度多一点，这样防止滑动溢出 -->
     <Ruler
-      :layout-attr="{width:parseInt(workerAttr.width)*2+'px',height:parseInt(workerAttr.height)*2+'px'}"
-      :move-x="scrollLeft"
-      :move-y="scrollTop"
+      :layout-attr="{
+        width: parseInt(canvasStyle.width) * 3 + 'px',
+        height: parseInt(canvasStyle.height) * 3 + 'px'
+      }"
+      :move-x="offsetVal.scrollLeft"
+      :move-y="offsetVal.scrollTop"
       :zoom-val="zoomVal"
+      :rule-attr-style="ruleAttrStyle"
+      @setpNumChange="setpNumChange"
     />
 
-    <div
-      class="worker-container"
-    >
+    <div class="worker-container">
       <happy-scroll
         color="rgba(69, 70, 71,.8)"
         size="6"
-        :scroll-top.sync="scrollTop"
-        :scroll-left.sync="scrollLeft"
+        :scroll-top.sync="offsetVal.scrollTop"
+        :scroll-left.sync="offsetVal.scrollLeft"
         resize
       >
         <div
           class="worker-gide-box"
-          :style="{width:parseInt(workerAttr.width)*2+'px',height:parseInt(workerAttr.height)*2+'px'}"
+          :style="{
+            width: parseInt(canvasStyle.width) * 3 + 'px',
+            height: parseInt(canvasStyle.height) * 3 + 'px'
+          }"
         >
           <div
             class="worker-gide-wrap"
@@ -30,7 +37,7 @@
           >
             <div
               class="worker-gide-content"
-              :style="workerAttr"
+              :style="canvasStyle"
             >
               <div class="worker-gide-bg">
                 <svg
@@ -78,63 +85,72 @@
                   />
                 </svg>
               </div>
-              <div
-                class="worker-gide-control"
-              >
-                <div style="text-align:Center;width:100px;height:100px;border:1px solid #000">
-                  控件
-                </div>
-                {{ scrollTop }}
-                <div style="text-align:center">
-                  {{ scrollLeft }}
-                </div>
+              <div class="worker-gide-control">
+                <slot />
               </div>
             </div>
-
           </div>
         </div>
       </happy-scroll>
-
     </div>
   </div>
 </template>
 <script>
-import Ruler from '@/components/ruler';
+import Ruler from './ruler';
 import { HappyScroll } from 'vue-happy-scroll';
 // 引入css，推荐将css放入main入口中引入一次即可。
 import 'vue-happy-scroll/docs/happy-scroll.css';
 export default {
   name: 'MiddlePane',
+  inject: ['canvasStyle'],
   components: { Ruler, HappyScroll },
   props: {
+    // 缩放
     zoomVal: {
       type: Number,
+      required: true
+    },
+    // 边界
+    offsetVal: {
+      type: Object,
+      required: true
+    },
+    paneStyle: {
+      type: Object,
+      required: true
+    },
+    ruleAttrStyle: {
+      type: Object,
       required: true
     }
   },
   data() {
     return {
-      scrollTop: 300, // x轴默认的边界 和 滚动条移动的值
-      scrollLeft: 800, // 同上
-      workerAttr: {
-        width: '2400px',
-        height: '1100px'
-      },
       workerWrapStyle: {
         transform: 'scale(1)'
       }
     };
   },
   watch: {
-    zoomVal: function(val) {
-      this.workerWrapStyle.transform = `scale(${val / 100})`;
+    zoomVal: {
+      handler: function(val) {
+        this.workerWrapStyle.transform = `scale(${val / 100})`;
+      },
+      immediate: true
     }
   },
   created() {
-    this.workerAttr.transform = `translate(${this.scrollLeft}px,${this.scrollTop}px)`;
+    this.canvasStyle.transform = `translate(${parseInt(
+      this.canvasStyle.width
+    )}px,${parseInt(this.canvasStyle.height)}px)`;
   },
-  mounted() {},
   methods: {
+    setpNumChange(val) {
+      console.log('val', val, this.zoomVal);
+      this.canvasStyle.transform = `translate(${400 + val / 2}px,${
+        this.offsetVal.scrollTop
+      }px)`;
+    }
   }
 };
 </script>
@@ -142,7 +158,6 @@ export default {
 .middle-pane {
   position: relative;
   overflow: hidden;
-  background: #2c2b32;
   .worker-container {
     position: absolute;
     transform-origin: 0px 0px;
@@ -162,10 +177,10 @@ export default {
       margin: 21px 0 0 21px;
       border-radius: 2px;
       .worker-gide-bg {
+        position: absolute;
         transform-origin: center center;
         width: 100%;
         height: 100%;
-        position: absolute;
         pointer-events: none;
       }
       .worker-gide-control {

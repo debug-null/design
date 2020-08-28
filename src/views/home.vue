@@ -6,19 +6,28 @@
         <label>素材分析</label>
       </div>
       <div class="middle-operation">
-        <div class="btns">
-          <div class="zoom-box">
-            <span @click="reduce">-</span>
-            <span>{{ zoomVal }}</span>
-            <span @click="plus">+</span>
-          </div>
-        </div>
+        <div class="btns" />
       </div>
       <div class="right-operation">右侧</div>
     </div>
     <div class="main-content">
       <leftPane />
-      <MiddlePane :zoom-val="zoomVal" />
+      <div
+        ref="middlePane"
+        class="middle-pane"
+      >
+        <designRuler
+          v-if="middleStyle.width"
+          :wrapper-style="middleStyle"
+          :rect-width="800"
+          :rect-height="300"
+        >
+          dfdfd
+          <div
+            style="width:100px;height:100px;background-color:#ddd;position:absolute"
+          />
+        </designRuler>
+      </div>
       <RightPane />
     </div>
   </div>
@@ -26,32 +35,31 @@
 <script>
 
 import LeftPane from './leftPane';
-import MiddlePane from './middlePane';
 import RightPane from './rightPane';
+import designRuler from '../../plugins';
 
 export default {
   name: 'Home',
   components: {
     LeftPane,
-    MiddlePane,
-    RightPane
+    RightPane,
+    designRuler
   },
   data() {
     return {
-      zoomVal: 100
+      middleStyle: {}
     };
   },
+  mounted() {
+    const middlePane = this.$refs.middlePane;
+    this.middleStyle = {
+      width: middlePane.clientWidth + 'px',
+      height: middlePane.clientHeight + 'px'
+    };
+    console.log('mounted -> this.middleStyle', this.middleStyle);
+  },
   methods: {
-    reduce() {
-      if (this.zoomVal) {
-        this.zoomVal -= 10;
-      }
-    },
-    plus() {
-      if (this.zoomVal < 200) {
-        this.zoomVal += 10;
-      }
-    }
+
   }
 };
 </script>
@@ -99,7 +107,7 @@ export default {
     }
     .middle-pane {
       flex: 1;
-      // background-color: #191f28;
+      min-width: 0;
     }
     .right-pane {
       background-color: #212734;

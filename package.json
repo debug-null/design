@@ -1,7 +1,7 @@
 {
-  "name": "design",
-  "version": "1.0.0",
-  "private": true,
+  "name": "ruler",
+  "version": "1.0.3",
+  "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "core-js": "^3.6.4",
+    "design-ruler": "0.0.1",
     "normalize.css": "^8.0.1",
-    "vue": "^2.6.11"
+    "vue": "2.6.10",
+    "vue-sketch-ruler": "^1.0.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.2.0",
@@ -21,8 +23,7 @@
     "eslint-plugin-vue": "^6.1.2",
     "node-sass": "^4.13.1",
     "sass-loader": "^8.0.2",
-    "vue-happy-scroll": "^2.1.1",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "2.6.10"
   },
   "eslintConfig": {
     "root": true,

@@ -26,14 +26,14 @@
         <div
           v-show="xIndicator"
           class="indicator"
-          :style="{left: xIndicator + 'px'}"
+          :style="{left: xIndicator + 'px',width: ruleAttrStyle.indicatorLineWidth, backgroundColor: ruleAttrStyle.indicatorLineColor}"
         >
-          <span>{{ xIndicatorVal }}</span>
+          <span :style="{backgroundColor: ruleAttrStyle.indicatorLineColor}">{{ xIndicatorVal }}</span>
         </div>
         <div
           ref="xLines"
           class="lines"
-          :style="{left: -(moveX - initMoveX)+'px'}"
+          :style="{left: -(moveX - initMoveX )+'px'}"
         />
       </div>
 
@@ -57,9 +57,9 @@
         <div
           v-show="yIndicator"
           class="indicator"
-          :style="{top: yIndicator + 'px'}"
+          :style="{top: yIndicator + 'px',height: ruleAttrStyle.indicatorLineWidth, backgroundColor: ruleAttrStyle.indicatorLineColor}"
         >
-          <span>{{ yIndicatorVal }}</span>
+          <span :style="{backgroundColor: ruleAttrStyle.indicatorLineColor}">{{ yIndicatorVal }}</span>
         </div>
         <div
           ref="yLines"
@@ -73,6 +73,7 @@
 <script>
 export default {
   name: 'Ruler',
+  inject: ['canvasStyle'], // 画布的宽高
   props: {
     // 标尺的尺寸
     layoutAttr: {
@@ -98,6 +99,10 @@ export default {
     zoomVal: {
       type: Number,
       default: 0
+    },
+    ruleAttrStyle: {
+      type: Object,
+      required: true
     }
   },
   data() {
@@ -134,10 +139,16 @@ export default {
     }
   },
   watch: {
-    zoomVal: function(val) {
+    zoomVal: {
+      handler: function(val) {
       // 求出标尺的间隔数
-      this.setpNum = Math.round(100 / (val / 100));
-      this.initRuler();
+        this.setpNum = Math.round(100 / (val / 100));
+        this.initRuler();
+      },
+      immediate: true
+    },
+    setpNum: function(val) {
+      this.$emit('setpNumChange', val);
     }
   },
   created() {
@@ -154,6 +165,7 @@ export default {
         const rulerWrapper = this.$refs.rulerWrapper;
         const wrapperWidth = rulerWrapper.offsetWidth;
         const wrapperHeight = rulerWrapper.offsetHeight;
+        console.log('initRuler -> wrapperHeight', wrapperWidth);
         this.xScale = [];
         this.yScale = [];
         this.getCalcRevise(this.xScale, wrapperWidth, 'x');
@@ -172,10 +184,11 @@ export default {
     // 构建刻度
     getCalcRevise(array, length, direction) {
       console.log('getCalcRevise -> array, length', array, length);
-      const offsetVal = direction === 'x' ? this.moveX : this.moveY;
-      for (let i = -offsetVal; i <= length - offsetVal; i += 1) {
+      // 左右均分当前像素
+      for (let i = -(length / 3); i <= (length - length / 3); i += 1) {
+        // console.log('getCalcRevise -> i', i);
         if (i % this.setpNum === 0) {
-          console.log('getCalcRevise -> this.setpNum', this.setpNum);
+          // console.log('getCalcRevise -> this.setpNum', this.setpNum, i);
           array.push({
             id: i
           });
@@ -185,20 +198,19 @@ export default {
     horizontalMouseMove(e) {
       //  光标距离左上角的距离 - 元素的偏移距离 - 标尺区域的初始偏移距离 + 值元素的宽度
       this.xIndicator = e.pageX - this.offsetX - this.initMoveX + 20;
-      // 标尺线的移动距离 + 标尺移动的距离  - 标尺区域的初始偏移距离 - 值元素的高度
-      const xIndicatorVal = this.xIndicator + this.moveX - this.initMoveX - 20;
-      const setpNum = (100 - this.setpNum);
-      this.xIndicatorVal = xIndicatorVal - setpNum;
+      // 标尺线的移动距离 + 标尺移动的距离  - 画布的宽度 - 值元素的高度
+      const xIndicatorVal = this.xIndicator + this.moveX - parseInt(this.canvasStyle.width) - 20;
+      // const setpNum = (100 - this.setpNum);
+      this.xIndicatorVal = xIndicatorVal;
     },
     horizontalMouseleave() {
       this.xIndicator = 0;
     },
     verticalMouseMove(e) {
-      // this.yIndicator = e.pageY - this.offsetY;
       //  光标距离左上角的距离 - 元素的偏移距离 - 标尺区域的初始偏移距离 + 值元素的宽度
       this.yIndicator = e.pageY - this.offsetY - this.initMoveY + 20;
-      // 标尺线的移动距离 + 标尺移动的距离  - 标尺区域的初始偏移距离- 值元素的高度
-      this.yIndicatorVal = this.yIndicator + this.moveY - this.initMoveY - 20;
+      // 标尺线的移动距离 + 标尺移动的距离  - 画布的高度- 值元素的高度
+      this.yIndicatorVal = this.yIndicator + this.moveY - parseInt(this.canvasStyle.height) - 20;
     },
     verticalMouseleave() {
       this.yIndicator = 0;
@@ -212,8 +224,12 @@ export default {
       Line.className = 'line';
       if (direction === 'x') {
         Line.style.left = `${this[indicator] + 20}px`;
+        Line.style.width = this.ruleAttrStyle.indicatorLineWidth;
+        Line.style.backgroundColor = this.ruleAttrStyle.indicatorLineColor;
       } else {
         Line.style.top = `${this[indicator] + 20}px`;
+        Line.style.height = this.ruleAttrStyle.indicatorLineWidth;
+        Line.style.backgroundColor = this.ruleAttrStyle.indicatorLineColor;
       }
       lines.appendChild(Line);
     },
@@ -247,6 +263,8 @@ export default {
       flex-grow: 0;
       flex-shrink: 0;
       flex-basis: 51px;
+      list-style: none;
+      box-sizing: unset;
       span {
         font-size: 12px;
         color: rgba(255, 255, 255, 0.5);
@@ -325,7 +343,6 @@ export default {
           &::before {
             content: "";
             position: absolute;
-            width: 1px;
             height: 8px;
             display: block;
             top: 0;
@@ -342,8 +359,6 @@ export default {
     position: relative;
     .indicator {
       position: absolute;
-      top: 22px;
-      left: 24px;
       z-index: 1;
       span {
         color: #fff;
@@ -360,8 +375,6 @@ export default {
         position: absolute;
         top: 0;
         left: 0px;
-
-        background-color: #363e50;
         opacity: 0.5;
         z-index: 1
       }
@@ -371,14 +384,13 @@ export default {
   .horizontal-box {
     .indicator {
       height: 100vh;
-      width: 1px;
-      background-color: #363e50;
       opacity: 0.5;
+      top: 22px;
+      left: 24px;
     }
     .lines{
       .line{
         height: 100vh;
-        width: 1px;
         cursor: col-resize;
       }
     }
@@ -387,8 +399,14 @@ export default {
     .indicator {
       height: 1px;
       width: 100%;
-      background-color: #363e50;
       opacity: 0.5;
+      top: 22px;
+      left: 20px;
+      span{
+        transform: rotate(90deg);
+        margin-left: -8px;
+        margin-top: 14px;
+      }
     }
      .lines{
       .line{
