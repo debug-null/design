@@ -40,10 +40,9 @@
   </div>
 </template>
 <script>
-import Vue from 'vue';
 import SketchRule from './sketchRuler.vue';
 
-export default Vue.extend({
+export default {
   components: {
     SketchRule
   },
@@ -162,7 +161,7 @@ export default Vue.extend({
       });
     }
   }
-});
+};
 </script>
 <style lang="scss" scoped>
 body {
