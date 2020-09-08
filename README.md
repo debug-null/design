@@ -1,24 +1,11 @@
-# design
+# Design-Ruler
+> 一个防墨刀画布的插件，画布部分已发布NPM包， 名称为 design-ruler.   目前未完善，仅做演示，不提供具体文档
+## 启动
+> npm run serve
 
-## Project setup
-```
-npm install
-```
+## 打包
+> npm run build
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## 效果图
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+![效果图](https://github.com/pseudo-god/design/blob/master/public/demo.png)

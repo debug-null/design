@@ -22,10 +22,12 @@
           :rect-width="800"
           :rect-height="300"
         >
-          dfdfd
+
           <div
             style="width:100px;height:100px;background-color:#ddd;position:absolute"
-          />
+          >
+            TEST
+          </div>
         </designRuler>
       </div>
       <RightPane />
