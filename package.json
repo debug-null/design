@@ -11,7 +11,7 @@
     "core-js": "^3.6.4",
     "design-ruler": "0.0.1",
     "normalize.css": "^8.0.1",
-    "vue": "2.6.10",
+    "vue": "2.7.14",
     "vue-sketch-ruler": "^1.0.3"
   },
   "devDependencies": {
